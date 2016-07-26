@@ -191,6 +191,9 @@ extern const int vle_num_opcodes;
 /* Opcode is only supported by Power8 architecture.  */
 #define PPC_OPCODE_POWER8     0x2000000000ull
 
+/* Opcode is only supported by PPE architecture.  */
+#define PPC_OPCODE_PPE        0x8000000000ull
+
 /* Opcode which is supported by the Hardware Transactional Memory extension.  */
 /* Currently, this is the same as the POWER8 mask.  If another cpu comes out
    that isn't a superset of POWER8, we can define this to its own mask.  */
@@ -386,6 +389,12 @@ extern const unsigned int num_powerpc_operands;
    with the operands table for simplicity.  The macro table is an
    array of struct powerpc_macro.  */
 
+/* This operand names a general purpose double register.  PPE42 specific.
+ * The disassembler uses this to print
+   register names with a leading 'd'.  */
+#define PPC_OPERAND_GPVDR (0x400000)
+
+
 struct powerpc_macro
 {
   /* The macro name.  */
@@ -409,5 +418,8 @@ extern const struct powerpc_macro powerpc_macros[];
 extern const int powerpc_num_macros;
 
 extern ppc_cpu_t ppc_parse_cpu (ppc_cpu_t, ppc_cpu_t *, const char *);
+extern int string_print_insn_powerpc (unsigned long insn,
+                           uint64_t dialect, char * assemblyString);
+extern void disassemble_init_powerpc_standalone (void);
 
 #endif /* PPC_H */

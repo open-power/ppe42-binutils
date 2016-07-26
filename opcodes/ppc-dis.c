@@ -34,7 +34,7 @@
    in both big and little endian mode and also for the POWER (RS/6000)
    chip.  */
 static int print_insn_powerpc (bfd_vma, struct disassemble_info *, int,
-			       ppc_cpu_t);
+                               ppc_cpu_t);
 
 struct dis_private
 {
@@ -56,14 +56,16 @@ struct ppc_mopt ppc_opts[] = {
     0 },
   { "405",     (PPC_OPCODE_PPC | PPC_OPCODE_403 | PPC_OPCODE_405),
     0 },
+  { "ppe42",     (PPC_OPCODE_PPE),
+    0 },
   { "440",     (PPC_OPCODE_PPC | PPC_OPCODE_BOOKE | PPC_OPCODE_440
-		| PPC_OPCODE_ISEL | PPC_OPCODE_RFMCI),
+                | PPC_OPCODE_ISEL | PPC_OPCODE_RFMCI),
     0 },
   { "464",     (PPC_OPCODE_PPC | PPC_OPCODE_BOOKE | PPC_OPCODE_440
-		| PPC_OPCODE_ISEL | PPC_OPCODE_RFMCI),
+                | PPC_OPCODE_ISEL | PPC_OPCODE_RFMCI),
     0 },
   { "476",     (PPC_OPCODE_PPC | PPC_OPCODE_ISEL | PPC_OPCODE_440
-		| PPC_OPCODE_476 | PPC_OPCODE_POWER4 | PPC_OPCODE_POWER5),
+                | PPC_OPCODE_476 | PPC_OPCODE_POWER4 | PPC_OPCODE_POWER5),
     0 },
   { "601",     (PPC_OPCODE_PPC | PPC_OPCODE_601),
     0 },
@@ -84,8 +86,8 @@ struct ppc_mopt ppc_opts[] = {
   { "750cl",   (PPC_OPCODE_PPC | PPC_OPCODE_PPCPS)
     , 0 },
   { "a2",      (PPC_OPCODE_PPC | PPC_OPCODE_ISEL | PPC_OPCODE_POWER4
-		| PPC_OPCODE_POWER5 | PPC_OPCODE_CACHELCK | PPC_OPCODE_64
-		| PPC_OPCODE_A2),
+                | PPC_OPCODE_POWER5 | PPC_OPCODE_CACHELCK | PPC_OPCODE_64
+                | PPC_OPCODE_A2),
     0 },
   { "altivec", (PPC_OPCODE_PPC),
     PPC_OPCODE_ALTIVEC | PPC_OPCODE_ALTIVEC2 },
@@ -96,61 +98,61 @@ struct ppc_mopt ppc_opts[] = {
   { "booke32", (PPC_OPCODE_PPC | PPC_OPCODE_BOOKE),
     0 },
   { "cell",    (PPC_OPCODE_PPC | PPC_OPCODE_64 | PPC_OPCODE_POWER4
-		| PPC_OPCODE_CELL | PPC_OPCODE_ALTIVEC),
+                | PPC_OPCODE_CELL | PPC_OPCODE_ALTIVEC),
     0 },
   { "com",     (PPC_OPCODE_COMMON),
     0 },
   { "e300",    (PPC_OPCODE_PPC | PPC_OPCODE_E300),
     0 },
   { "e500",    (PPC_OPCODE_PPC | PPC_OPCODE_BOOKE | PPC_OPCODE_SPE
-		| PPC_OPCODE_ISEL | PPC_OPCODE_EFS | PPC_OPCODE_BRLOCK
-		| PPC_OPCODE_PMR | PPC_OPCODE_CACHELCK | PPC_OPCODE_RFMCI
-		| PPC_OPCODE_E500),
+                | PPC_OPCODE_ISEL | PPC_OPCODE_EFS | PPC_OPCODE_BRLOCK
+                | PPC_OPCODE_PMR | PPC_OPCODE_CACHELCK | PPC_OPCODE_RFMCI
+                | PPC_OPCODE_E500),
     0 },
   { "e500mc",  (PPC_OPCODE_PPC | PPC_OPCODE_BOOKE | PPC_OPCODE_ISEL
-		| PPC_OPCODE_PMR | PPC_OPCODE_CACHELCK | PPC_OPCODE_RFMCI
-		| PPC_OPCODE_E500MC),
+                | PPC_OPCODE_PMR | PPC_OPCODE_CACHELCK | PPC_OPCODE_RFMCI
+                | PPC_OPCODE_E500MC),
     0 },
   { "e500mc64",  (PPC_OPCODE_PPC | PPC_OPCODE_BOOKE | PPC_OPCODE_ISEL
-		| PPC_OPCODE_PMR | PPC_OPCODE_CACHELCK | PPC_OPCODE_RFMCI
-		| PPC_OPCODE_E500MC | PPC_OPCODE_64 | PPC_OPCODE_POWER5
-		| PPC_OPCODE_POWER6 | PPC_OPCODE_POWER7),
+                | PPC_OPCODE_PMR | PPC_OPCODE_CACHELCK | PPC_OPCODE_RFMCI
+                | PPC_OPCODE_E500MC | PPC_OPCODE_64 | PPC_OPCODE_POWER5
+                | PPC_OPCODE_POWER6 | PPC_OPCODE_POWER7),
     0 },
   { "e5500",    (PPC_OPCODE_PPC | PPC_OPCODE_BOOKE | PPC_OPCODE_ISEL
-		| PPC_OPCODE_PMR | PPC_OPCODE_CACHELCK | PPC_OPCODE_RFMCI
-		| PPC_OPCODE_E500MC | PPC_OPCODE_64 | PPC_OPCODE_POWER4
-		| PPC_OPCODE_POWER5 | PPC_OPCODE_POWER6
-		| PPC_OPCODE_POWER7),
+                | PPC_OPCODE_PMR | PPC_OPCODE_CACHELCK | PPC_OPCODE_RFMCI
+                | PPC_OPCODE_E500MC | PPC_OPCODE_64 | PPC_OPCODE_POWER4
+                | PPC_OPCODE_POWER5 | PPC_OPCODE_POWER6
+                | PPC_OPCODE_POWER7),
     0 },
   { "e6500",   (PPC_OPCODE_PPC | PPC_OPCODE_BOOKE | PPC_OPCODE_ISEL
-		| PPC_OPCODE_PMR | PPC_OPCODE_CACHELCK | PPC_OPCODE_RFMCI
-		| PPC_OPCODE_E500MC | PPC_OPCODE_64 | PPC_OPCODE_ALTIVEC
-		| PPC_OPCODE_ALTIVEC2 | PPC_OPCODE_E6500 | PPC_OPCODE_POWER4
-		| PPC_OPCODE_POWER5 | PPC_OPCODE_POWER6 | PPC_OPCODE_POWER7),
+                | PPC_OPCODE_PMR | PPC_OPCODE_CACHELCK | PPC_OPCODE_RFMCI
+                | PPC_OPCODE_E500MC | PPC_OPCODE_64 | PPC_OPCODE_ALTIVEC
+                | PPC_OPCODE_ALTIVEC2 | PPC_OPCODE_E6500 | PPC_OPCODE_POWER4
+                | PPC_OPCODE_POWER5 | PPC_OPCODE_POWER6 | PPC_OPCODE_POWER7),
     0 },
   { "e500x2",  (PPC_OPCODE_PPC | PPC_OPCODE_BOOKE | PPC_OPCODE_SPE
-		| PPC_OPCODE_ISEL | PPC_OPCODE_EFS | PPC_OPCODE_BRLOCK
-		| PPC_OPCODE_PMR | PPC_OPCODE_CACHELCK | PPC_OPCODE_RFMCI
-		| PPC_OPCODE_E500),
+                | PPC_OPCODE_ISEL | PPC_OPCODE_EFS | PPC_OPCODE_BRLOCK
+                | PPC_OPCODE_PMR | PPC_OPCODE_CACHELCK | PPC_OPCODE_RFMCI
+                | PPC_OPCODE_E500),
     0 },
   { "efs",     (PPC_OPCODE_PPC | PPC_OPCODE_EFS),
     0 },
   { "power4",  (PPC_OPCODE_PPC | PPC_OPCODE_64 | PPC_OPCODE_POWER4),
     0 },
   { "power5",  (PPC_OPCODE_PPC | PPC_OPCODE_64 | PPC_OPCODE_POWER4
-		| PPC_OPCODE_POWER5),
+                | PPC_OPCODE_POWER5),
     0 },
   { "power6",  (PPC_OPCODE_PPC | PPC_OPCODE_64 | PPC_OPCODE_POWER4
-		| PPC_OPCODE_POWER5 | PPC_OPCODE_POWER6 | PPC_OPCODE_ALTIVEC),
+                | PPC_OPCODE_POWER5 | PPC_OPCODE_POWER6 | PPC_OPCODE_ALTIVEC),
     0 },
   { "power7",  (PPC_OPCODE_PPC | PPC_OPCODE_ISEL | PPC_OPCODE_64
-		| PPC_OPCODE_POWER4 | PPC_OPCODE_POWER5 | PPC_OPCODE_POWER6
-		| PPC_OPCODE_POWER7 | PPC_OPCODE_ALTIVEC | PPC_OPCODE_VSX),
+                | PPC_OPCODE_POWER4 | PPC_OPCODE_POWER5 | PPC_OPCODE_POWER6
+                | PPC_OPCODE_POWER7 | PPC_OPCODE_ALTIVEC | PPC_OPCODE_VSX),
     0 },
   { "power8",  (PPC_OPCODE_PPC | PPC_OPCODE_ISEL | PPC_OPCODE_64
-		| PPC_OPCODE_POWER4 | PPC_OPCODE_POWER5 | PPC_OPCODE_POWER6
-		| PPC_OPCODE_POWER7 | PPC_OPCODE_POWER8 | PPC_OPCODE_HTM
-		| PPC_OPCODE_ALTIVEC | PPC_OPCODE_ALTIVEC2 | PPC_OPCODE_VSX),
+                | PPC_OPCODE_POWER4 | PPC_OPCODE_POWER5 | PPC_OPCODE_POWER6
+                | PPC_OPCODE_POWER7 | PPC_OPCODE_POWER8 | PPC_OPCODE_HTM
+                | PPC_OPCODE_ALTIVEC | PPC_OPCODE_ALTIVEC2 | PPC_OPCODE_VSX),
     0 },
   { "ppc",     (PPC_OPCODE_PPC),
     0 },
@@ -169,29 +171,29 @@ struct ppc_mopt ppc_opts[] = {
   { "pwr4",    (PPC_OPCODE_PPC | PPC_OPCODE_64 | PPC_OPCODE_POWER4),
     0 },
   { "pwr5",    (PPC_OPCODE_PPC | PPC_OPCODE_64 | PPC_OPCODE_POWER4
-		| PPC_OPCODE_POWER5),
+                | PPC_OPCODE_POWER5),
     0 },
   { "pwr5x",   (PPC_OPCODE_PPC | PPC_OPCODE_64 | PPC_OPCODE_POWER4
-		| PPC_OPCODE_POWER5),
+                | PPC_OPCODE_POWER5),
     0 },
   { "pwr6",    (PPC_OPCODE_PPC | PPC_OPCODE_64 | PPC_OPCODE_POWER4
-		| PPC_OPCODE_POWER5 | PPC_OPCODE_POWER6 | PPC_OPCODE_ALTIVEC),
+                | PPC_OPCODE_POWER5 | PPC_OPCODE_POWER6 | PPC_OPCODE_ALTIVEC),
     0 },
   { "pwr7",    (PPC_OPCODE_PPC | PPC_OPCODE_ISEL | PPC_OPCODE_64
-		| PPC_OPCODE_POWER4 | PPC_OPCODE_POWER5 | PPC_OPCODE_POWER6
-		| PPC_OPCODE_POWER7 | PPC_OPCODE_ALTIVEC | PPC_OPCODE_VSX),
+                | PPC_OPCODE_POWER4 | PPC_OPCODE_POWER5 | PPC_OPCODE_POWER6
+                | PPC_OPCODE_POWER7 | PPC_OPCODE_ALTIVEC | PPC_OPCODE_VSX),
     0 },
   { "pwr8",    (PPC_OPCODE_PPC | PPC_OPCODE_ISEL | PPC_OPCODE_64
-		| PPC_OPCODE_POWER4 | PPC_OPCODE_POWER5 | PPC_OPCODE_POWER6
-		| PPC_OPCODE_POWER7 | PPC_OPCODE_POWER8 | PPC_OPCODE_HTM
-		| PPC_OPCODE_ALTIVEC | PPC_OPCODE_ALTIVEC2 | PPC_OPCODE_VSX),
+                | PPC_OPCODE_POWER4 | PPC_OPCODE_POWER5 | PPC_OPCODE_POWER6
+                | PPC_OPCODE_POWER7 | PPC_OPCODE_POWER8 | PPC_OPCODE_HTM
+                | PPC_OPCODE_ALTIVEC | PPC_OPCODE_ALTIVEC2 | PPC_OPCODE_VSX),
     0 },
   { "pwrx",    (PPC_OPCODE_POWER | PPC_OPCODE_POWER2),
     0 },
   { "spe",     (PPC_OPCODE_PPC | PPC_OPCODE_EFS),
     PPC_OPCODE_SPE },
   { "titan",   (PPC_OPCODE_PPC | PPC_OPCODE_BOOKE | PPC_OPCODE_PMR
-		| PPC_OPCODE_RFMCI | PPC_OPCODE_TITAN),
+                | PPC_OPCODE_RFMCI | PPC_OPCODE_TITAN),
     0 },
   { "vle",     (PPC_OPCODE_PPC | PPC_OPCODE_ISEL | PPC_OPCODE_VLE),
     PPC_OPCODE_VLE },
@@ -230,14 +232,14 @@ ppc_parse_cpu (ppc_cpu_t ppc_cpu, ppc_cpu_t *sticky, const char *arg)
   for (i = 0; i < sizeof (ppc_opts) / sizeof (ppc_opts[0]); i++)
     if (strcmp (ppc_opts[i].opt, arg) == 0)
       {
-	if (ppc_opts[i].sticky)
-	  {
-	    *sticky |= ppc_opts[i].sticky;
-	    if ((ppc_cpu & ~*sticky) != 0)
-	      break;
-	  }
-	ppc_cpu = ppc_opts[i].cpu;
-	break;
+        if (ppc_opts[i].sticky)
+          {
+            *sticky |= ppc_opts[i].sticky;
+            if ((ppc_cpu & ~*sticky) != 0)
+              break;
+          }
+        ppc_cpu = ppc_opts[i].cpu;
+        break;
       }
   if (i >= sizeof (ppc_opts) / sizeof (ppc_opts[0]))
     return 0;
@@ -308,19 +310,19 @@ powerpc_init_dialect (struct disassemble_info *info)
       char *end = strchr (arg, ',');
 
       if (end != NULL)
-	*end = 0;
+        *end = 0;
 
       if ((new_cpu = ppc_parse_cpu (dialect, &sticky, arg)) != 0)
-	dialect = new_cpu;
+        dialect = new_cpu;
       else if (strcmp (arg, "32") == 0)
-	dialect &= ~(ppc_cpu_t) PPC_OPCODE_64;
+        dialect &= ~(ppc_cpu_t) PPC_OPCODE_64;
       else if (strcmp (arg, "64") == 0)
-	dialect |= PPC_OPCODE_64;
+        dialect |= PPC_OPCODE_64;
       else
-	fprintf (stderr, _("warning: ignoring unknown -M%s option\n"), arg);
+        fprintf (stderr, _("warning: ignoring unknown -M%s option\n"), arg);
 
       if (end != NULL)
-	*end++ = ',';
+        *end++ = ',';
       arg = end;
     }
 
@@ -354,7 +356,7 @@ disassemble_init_powerpc (struct disassemble_info *info)
   for (i = PPC_OPCD_SEGS; i > 0; --i)
     {
       if (powerpc_opcd_indices[i] == 0)
-	powerpc_opcd_indices[i] = last;
+        powerpc_opcd_indices[i] = last;
       last = powerpc_opcd_indices[i];
     }
 
@@ -371,13 +373,40 @@ disassemble_init_powerpc (struct disassemble_info *info)
   for (i = VLE_OPCD_SEGS; i > 0; --i)
     {
       if (vle_opcd_indices[i] == 0)
-	vle_opcd_indices[i] = last;
+        vle_opcd_indices[i] = last;
       last = vle_opcd_indices[i];
     }
 
   if (info->arch == bfd_arch_powerpc)
     powerpc_init_dialect (info);
 }
+
+/* Calculate opcode table indices to speed up disassembly,
+   and init dialect.  */
+
+void
+disassemble_init_powerpc_standalone ()
+{
+  int i;
+  unsigned short last;
+
+  i = powerpc_num_opcodes;
+  while (--i >= 0)
+    {
+      unsigned op = PPC_OP (powerpc_opcodes[i].opcode);
+
+      powerpc_opcd_indices[op] = i;
+    }
+
+  last = powerpc_num_opcodes;
+  for (i = PPC_OPCD_SEGS; i > 0; --i)
+    {
+      if (powerpc_opcd_indices[i] == 0)
+        powerpc_opcd_indices[i] = last;
+      last = powerpc_opcd_indices[i];
+    }
+}
+
 
 /* Print a big endian PowerPC instruction.  */
 
@@ -407,7 +436,7 @@ print_insn_rs6000 (bfd_vma memaddr, struct disassemble_info *info)
 
 static long
 operand_value_powerpc (const struct powerpc_operand *operand,
-		       unsigned long insn, ppc_cpu_t dialect)
+                       unsigned long insn, ppc_cpu_t dialect)
 {
   long value;
   int invalid;
@@ -417,20 +446,20 @@ operand_value_powerpc (const struct powerpc_operand *operand,
   else
     {
       if (operand->shift >= 0)
-	value = (insn >> operand->shift) & operand->bitm;
+        value = (insn >> operand->shift) & operand->bitm;
       else
-	value = (insn << -operand->shift) & operand->bitm;
+        value = (insn << -operand->shift) & operand->bitm;
       if ((operand->flags & PPC_OPERAND_SIGNED) != 0)
-	{
-	  /* BITM is always some number of zeros followed by some
-	     number of ones, followed by some number of zeros.  */
-	  unsigned long top = operand->bitm;
-	  /* top & -top gives the rightmost 1 bit, so this
-	     fills in any trailing zeros.  */
-	  top |= (top & -top) - 1;
-	  top &= ~(top >> 1);
-	  value = (value ^ top) - top;
-	}
+        {
+          /* BITM is always some number of zeros followed by some
+             number of ones, followed by some number of zeros.  */
+          unsigned long top = operand->bitm;
+          /* top & -top gives the rightmost 1 bit, so this
+             fills in any trailing zeros.  */
+          top |= (top & -top) - 1;
+          top &= ~(top >> 1);
+          value = (value ^ top) - top;
+        }
     }
 
   return value;
@@ -440,7 +469,7 @@ operand_value_powerpc (const struct powerpc_operand *operand,
 
 static int
 skip_optional_operands (const unsigned char *opindex,
-			unsigned long insn, ppc_cpu_t dialect)
+                        unsigned long insn, ppc_cpu_t dialect)
 {
   const struct powerpc_operand *operand;
 
@@ -448,9 +477,9 @@ skip_optional_operands (const unsigned char *opindex,
     {
       operand = &powerpc_operands[*opindex];
       if ((operand->flags & PPC_OPERAND_NEXT) != 0
-	  || ((operand->flags & PPC_OPERAND_OPTIONAL) != 0
-	      && operand_value_powerpc (operand, insn, dialect) != 0))
-	return 0;
+          || ((operand->flags & PPC_OPERAND_OPTIONAL) != 0
+              && operand_value_powerpc (operand, insn, dialect) != 0))
+        return 0;
     }
 
   return 1;
@@ -480,21 +509,21 @@ lookup_powerpc (unsigned long insn, ppc_cpu_t dialect)
       int invalid;
 
       if ((insn & opcode->mask) != opcode->opcode
-	  || (dialect != (ppc_cpu_t) -1
-	      && ((opcode->flags & dialect) == 0
-		  || (opcode->deprecated & dialect) != 0)))
-	continue;
+          || (dialect != (ppc_cpu_t) -1
+              && ((opcode->flags & dialect) == 0
+                  || (opcode->deprecated & dialect) != 0)))
+        continue;
 
       /* Check validity of operands.  */
       invalid = 0;
       for (opindex = opcode->operands; *opindex != 0; opindex++)
-	{
-	  operand = powerpc_operands + *opindex;
-	  if (operand->extract)
-	    (*operand->extract) (insn, dialect, &invalid);
-	}
+        {
+          operand = powerpc_operands + *opindex;
+          if (operand->extract)
+            (*operand->extract) (insn, dialect, &invalid);
+        }
       if (invalid)
-	continue;
+        continue;
 
       return opcode;
     }
@@ -535,20 +564,20 @@ lookup_vle (unsigned long insn)
 
       insn2 = insn;
       if (table_op_is_short)
-	insn2 >>= 16;
+        insn2 >>= 16;
       if ((insn2 & table_mask) != table_opcd)
-	continue;
+        continue;
 
       /* Check validity of operands.  */
       invalid = 0;
       for (opindex = opcode->operands; *opindex != 0; ++opindex)
-	{
-	  operand = powerpc_operands + *opindex;
-	  if (operand->extract)
-	    (*operand->extract) (insn, (ppc_cpu_t)0, &invalid);
-	}
+        {
+          operand = powerpc_operands + *opindex;
+          if (operand->extract)
+            (*operand->extract) (insn, (ppc_cpu_t)0, &invalid);
+        }
       if (invalid)
-	continue;
+        continue;
 
       return opcode;
     }
@@ -560,9 +589,9 @@ lookup_vle (unsigned long insn)
 
 static int
 print_insn_powerpc (bfd_vma memaddr,
-		    struct disassemble_info *info,
-		    int bigendian,
-		    ppc_cpu_t dialect)
+                    struct disassemble_info *info,
+                    int bigendian,
+                    ppc_cpu_t dialect)
 {
   bfd_byte buffer[4];
   int status;
@@ -604,7 +633,7 @@ print_insn_powerpc (bfd_vma memaddr,
     {
       opcode = lookup_vle (insn);
       if (opcode != NULL)
-	insn_is_short = PPC_OP_SE_VLE(opcode->mask);
+        insn_is_short = PPC_OP_SE_VLE(opcode->mask);
     }
   if (opcode == NULL)
     opcode = lookup_powerpc (insn, dialect);
@@ -620,9 +649,9 @@ print_insn_powerpc (bfd_vma memaddr,
       int skip_optional;
 
       if (opcode->operands[0] != 0)
-	(*info->fprintf_func) (info->stream, "%-7s ", opcode->name);
+        (*info->fprintf_func) (info->stream, "%-7s ", opcode->name);
       else
-	(*info->fprintf_func) (info->stream, "%s", opcode->name);
+        (*info->fprintf_func) (info->stream, "%s", opcode->name);
 
       if (insn_is_short)
         /* The operands will be fetched out of the 16-bit instruction.  */
@@ -633,91 +662,93 @@ print_insn_powerpc (bfd_vma memaddr,
       need_paren = 0;
       skip_optional = -1;
       for (opindex = opcode->operands; *opindex != 0; opindex++)
-	{
-	  long value;
+        {
+          long value;
 
-	  operand = powerpc_operands + *opindex;
+          operand = powerpc_operands + *opindex;
 
-	  /* Operands that are marked FAKE are simply ignored.  We
-	     already made sure that the extract function considered
-	     the instruction to be valid.  */
-	  if ((operand->flags & PPC_OPERAND_FAKE) != 0)
-	    continue;
+          /* Operands that are marked FAKE are simply ignored.  We
+             already made sure that the extract function considered
+             the instruction to be valid.  */
+          if ((operand->flags & PPC_OPERAND_FAKE) != 0)
+            continue;
 
-	  /* If all of the optional operands have the value zero,
-	     then don't print any of them.  */
-	  if ((operand->flags & PPC_OPERAND_OPTIONAL) != 0)
-	    {
-	      if (skip_optional < 0)
-		skip_optional = skip_optional_operands (opindex, insn,
-							dialect);
-	      if (skip_optional)
-		continue;
-	    }
+          /* If all of the optional operands have the value zero,
+             then don't print any of them.  */
+          if ((operand->flags & PPC_OPERAND_OPTIONAL) != 0)
+            {
+              if (skip_optional < 0)
+                skip_optional = skip_optional_operands (opindex, insn,
+                                                        dialect);
+              if (skip_optional)
+                continue;
+            }
 
-	  value = operand_value_powerpc (operand, insn, dialect);
+          value = operand_value_powerpc (operand, insn, dialect);
 
-	  if (need_comma)
-	    {
-	      (*info->fprintf_func) (info->stream, ",");
-	      need_comma = 0;
-	    }
+          if (need_comma)
+            {
+              (*info->fprintf_func) (info->stream, ",");
+              need_comma = 0;
+            }
 
-	  /* Print the operand as directed by the flags.  */
-	  if ((operand->flags & PPC_OPERAND_GPR) != 0
-	      || ((operand->flags & PPC_OPERAND_GPR_0) != 0 && value != 0))
-	    (*info->fprintf_func) (info->stream, "r%ld", value);
-	  else if ((operand->flags & PPC_OPERAND_FPR) != 0)
-	    (*info->fprintf_func) (info->stream, "f%ld", value);
-	  else if ((operand->flags & PPC_OPERAND_VR) != 0)
-	    (*info->fprintf_func) (info->stream, "v%ld", value);
-	  else if ((operand->flags & PPC_OPERAND_VSR) != 0)
-	    (*info->fprintf_func) (info->stream, "vs%ld", value);
-	  else if ((operand->flags & PPC_OPERAND_RELATIVE) != 0)
-	    (*info->print_address_func) (memaddr + value, info);
-	  else if ((operand->flags & PPC_OPERAND_ABSOLUTE) != 0)
-	    (*info->print_address_func) ((bfd_vma) value & 0xffffffff, info);
-	  else if ((operand->flags & PPC_OPERAND_FSL) != 0) 
-	    (*info->fprintf_func) (info->stream, "fsl%ld", value);
-	  else if ((operand->flags & PPC_OPERAND_FCR) != 0)
-	    (*info->fprintf_func) (info->stream, "fcr%ld", value);
-	  else if ((operand->flags & PPC_OPERAND_UDI) != 0)
-	    (*info->fprintf_func) (info->stream, "%ld", value);
-	  else if ((operand->flags & PPC_OPERAND_CR_REG) != 0
-		   && (((dialect & PPC_OPCODE_PPC) != 0)
-		       || ((dialect & PPC_OPCODE_VLE) != 0)))
-	    (*info->fprintf_func) (info->stream, "cr%ld", value);
-	  else if (((operand->flags & PPC_OPERAND_CR_BIT) != 0)
-		   && (((dialect & PPC_OPCODE_PPC) != 0)
-		       || ((dialect & PPC_OPCODE_VLE) != 0)))
-	    {
-	      static const char *cbnames[4] = { "lt", "gt", "eq", "so" };
-	      int cr;
-	      int cc;
+          /* Print the operand as directed by the flags.  */
+          if ((operand->flags & PPC_OPERAND_GPR) != 0
+              || ((operand->flags & PPC_OPERAND_GPR_0) != 0 && value != 0))
+            (*info->fprintf_func) (info->stream, "r%ld", value);
+          else if ((operand->flags & PPC_OPERAND_GPVDR) != 0)
+                    (*info->fprintf_func) (info->stream, "d%ld", value);
+          else if ((operand->flags & PPC_OPERAND_FPR) != 0)
+            (*info->fprintf_func) (info->stream, "f%ld", value);
+          else if ((operand->flags & PPC_OPERAND_VR) != 0)
+            (*info->fprintf_func) (info->stream, "v%ld", value);
+          else if ((operand->flags & PPC_OPERAND_VSR) != 0)
+            (*info->fprintf_func) (info->stream, "vs%ld", value);
+          else if ((operand->flags & PPC_OPERAND_RELATIVE) != 0)
+            (*info->print_address_func) (memaddr + value, info);
+          else if ((operand->flags & PPC_OPERAND_ABSOLUTE) != 0)
+            (*info->print_address_func) ((bfd_vma) value & 0xffffffff, info);
+          else if ((operand->flags & PPC_OPERAND_FSL) != 0)
+            (*info->fprintf_func) (info->stream, "fsl%ld", value);
+          else if ((operand->flags & PPC_OPERAND_FCR) != 0)
+            (*info->fprintf_func) (info->stream, "fcr%ld", value);
+          else if ((operand->flags & PPC_OPERAND_UDI) != 0)
+            (*info->fprintf_func) (info->stream, "%ld", value);
+          else if ((operand->flags & PPC_OPERAND_CR_REG) != 0
+                   && (((dialect & PPC_OPCODE_PPC) != 0)
+                       || ((dialect & PPC_OPCODE_VLE) != 0)))
+            (*info->fprintf_func) (info->stream, "cr%ld", value);
+          else if (((operand->flags & PPC_OPERAND_CR_BIT) != 0)
+                   && (((dialect & PPC_OPCODE_PPC) != 0)
+                       || ((dialect & PPC_OPCODE_VLE) != 0)))
+            {
+              static const char *cbnames[4] = { "lt", "gt", "eq", "so" };
+              int cr;
+              int cc;
 
-	      cr = value >> 2;
-	      if (cr != 0)
-		(*info->fprintf_func) (info->stream, "4*cr%d+", cr);
-	      cc = value & 3;
-	      (*info->fprintf_func) (info->stream, "%s", cbnames[cc]);
-	    }
-	  else
-	    (*info->fprintf_func) (info->stream, "%d", (int) value);
+              cr = value >> 2;
+              if (cr != 0)
+                (*info->fprintf_func) (info->stream, "4*cr%d+", cr);
+              cc = value & 3;
+              (*info->fprintf_func) (info->stream, "%s", cbnames[cc]);
+            }
+          else
+            (*info->fprintf_func) (info->stream, "%d", (int) value);
 
-	  if (need_paren)
-	    {
-	      (*info->fprintf_func) (info->stream, ")");
-	      need_paren = 0;
-	    }
+          if (need_paren)
+            {
+              (*info->fprintf_func) (info->stream, ")");
+              need_paren = 0;
+            }
 
-	  if ((operand->flags & PPC_OPERAND_PARENS) == 0)
-	    need_comma = 1;
-	  else
-	    {
-	      (*info->fprintf_func) (info->stream, "(");
-	      need_paren = 1;
-	    }
-	}
+          if ((operand->flags & PPC_OPERAND_PARENS) == 0)
+            need_comma = 1;
+          else
+            {
+              (*info->fprintf_func) (info->stream, "(");
+              need_paren = 1;
+            }
+        }
 
       /* We have found and printed an instruction.
          If it was a short VLE instruction we have more to do.  */
@@ -737,6 +768,150 @@ print_insn_powerpc (bfd_vma memaddr,
   return 4;
 }
 
+int
+string_print_insn_powerpc (unsigned long insn,
+                           uint64_t dialect, char * assemblyString)
+{
+  const struct powerpc_opcode *opcode;
+  bfd_boolean insn_is_short;
+  unsigned prevStrEnd = 0;
+
+  /* Get the major opcode of the insn.  */
+  opcode = NULL;
+  insn_is_short = FALSE;
+
+  uint8_t * mybytes = (uint8_t *) &insn;
+  unsigned long be = 0;
+
+  be = (unsigned long) mybytes[0] << 24;
+  be |= (unsigned long) mybytes[1] << 16;
+  be |= (unsigned long) mybytes[2] << 8;
+  be |= (unsigned long) mybytes[3];
+
+  insn = be;
+  if (opcode == NULL)
+    opcode = lookup_powerpc (insn, dialect);
+
+  if (opcode != NULL)
+    {
+      const unsigned char *opindex;
+      const struct powerpc_operand *operand;
+      int need_comma;
+      int need_paren;
+      int skip_optional;
+
+      if (opcode->operands[0] != 0)
+            prevStrEnd += sprintf(prevStrEnd+assemblyString, "%-7s ", opcode->name);
+      else
+            prevStrEnd += sprintf(prevStrEnd+assemblyString, "%s", opcode->name);
+
+      if (insn_is_short)
+        /* The operands will be fetched out of the 16-bit instruction.  */
+        insn >>= 16;
+
+      /* Now extract and print the operands.  */
+      need_comma = 0;
+      need_paren = 0;
+      skip_optional = -1;
+      for (opindex = opcode->operands; *opindex != 0; opindex++)
+        {
+          long value;
+
+          operand = powerpc_operands + *opindex;
+
+          /* Operands that are marked FAKE are simply ignored.  We
+           already made sure that the extract function considered
+           the instruction to be valid.  */
+          if ((operand->flags & PPC_OPERAND_FAKE) != 0)
+            continue;
+
+         /* If all of the optional operands have the value zero,
+            then don't print any of them.  */
+          if ((operand->flags & PPC_OPERAND_OPTIONAL) != 0)
+          {
+            if (skip_optional < 0)
+               skip_optional = skip_optional_operands (opindex, insn,
+                             dialect);
+            if (skip_optional)
+               continue;
+          }
+
+          value = operand_value_powerpc (operand, insn, dialect);
+
+          if (need_comma)
+          {
+              prevStrEnd += sprintf(prevStrEnd+assemblyString, ",");
+              need_comma = 0;
+          }
+
+          /* Print the operand as directed by the flags.  */
+          if ((operand->flags & PPC_OPERAND_GPR) != 0
+              || ((operand->flags & PPC_OPERAND_GPR_0) != 0 && value != 0))
+            prevStrEnd += sprintf(prevStrEnd+assemblyString, "r%ld", value);
+          else if ((operand->flags & PPC_OPERAND_GPVDR) != 0)
+            prevStrEnd += sprintf(prevStrEnd+assemblyString, "d%ld", value);
+          else if ((operand->flags & PPC_OPERAND_FPR) != 0)
+            prevStrEnd += sprintf(prevStrEnd+assemblyString, "f%ld", value);
+          else if ((operand->flags & PPC_OPERAND_VR) != 0)
+            prevStrEnd += sprintf(prevStrEnd+assemblyString, "v%ld", value);
+          else if ((operand->flags & PPC_OPERAND_VSR) != 0)
+            prevStrEnd += sprintf(prevStrEnd+assemblyString, "vs%ld", value);
+          else if ((operand->flags & PPC_OPERAND_RELATIVE) != 0)
+            prevStrEnd += sprintf(prevStrEnd+assemblyString, "0x%lx", value);
+          else if ((operand->flags & PPC_OPERAND_ABSOLUTE) != 0)
+            prevStrEnd += sprintf(prevStrEnd+assemblyString, "0x%lx", value & 0xffffffff);
+          else if ((operand->flags & PPC_OPERAND_FSL) != 0)
+            prevStrEnd += sprintf(prevStrEnd+assemblyString, "fsl%ld", value);
+          else if ((operand->flags & PPC_OPERAND_FCR) != 0)
+            prevStrEnd += sprintf(prevStrEnd+assemblyString, "fcr%ld", value);
+          else if ((operand->flags & PPC_OPERAND_UDI) != 0)
+            prevStrEnd += sprintf(prevStrEnd+assemblyString, "%ld", value);
+          else if ((operand->flags & PPC_OPERAND_CR_REG) != 0
+                   && (((dialect & PPC_OPCODE_PPC) != 0)
+                       || ((dialect & PPC_OPCODE_VLE) != 0)))
+            prevStrEnd += sprintf(prevStrEnd+assemblyString, "cr%ld", value);
+          else if (((operand->flags & PPC_OPERAND_CR_BIT) != 0)
+                   && (((dialect & PPC_OPCODE_PPC) != 0)
+                       || ((dialect & PPC_OPCODE_VLE) != 0)))
+            {
+              static const char *cbnames[4] = { "lt", "gt", "eq", "so" };
+              int cr;
+              int cc;
+
+              cr = value >> 2;
+              if (cr != 0)
+                prevStrEnd += sprintf(prevStrEnd+assemblyString, "4*cr%d+", cr);
+              cc = value & 3;
+              prevStrEnd += sprintf(prevStrEnd+assemblyString, "%s", cbnames[cc]);
+            }
+          else
+            prevStrEnd += sprintf(prevStrEnd+assemblyString, "%d", (int) value);
+
+          if (need_paren)
+            {
+              prevStrEnd += sprintf(prevStrEnd+assemblyString, ")");
+              need_paren = 0;
+            }
+
+          if ((operand->flags & PPC_OPERAND_PARENS) == 0)
+            need_comma = 1;
+          else
+            {
+              prevStrEnd += sprintf(prevStrEnd+assemblyString, "(");
+              need_paren = 1;
+            }
+        }
+       return 4;
+    }
+  else
+    {/* We could not find a match.  */
+      prevStrEnd += sprintf(prevStrEnd+assemblyString, "   .long 0x%lx", insn);
+    }
+  return 4;
+}
+
+
+
 void
 print_ppc_disassembler_options (FILE *stream)
 {
@@ -750,10 +925,10 @@ the -M switch:\n"));
     {
       col += fprintf (stream, " %s,", ppc_opts[i].opt);
       if (col > 66)
-	{
-	  fprintf (stream, "\n");
-	  col = 0;
-	}
+        {
+          fprintf (stream, "\n");
+          col = 0;
+        }
     }
   fprintf (stream, " 32, 64\n");
 }

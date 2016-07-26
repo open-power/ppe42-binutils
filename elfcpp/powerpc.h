@@ -177,6 +177,8 @@ enum
   R_PPC64_DTPREL16_HIGHA = 115,
   R_PPC_EMB_RELSDA = 116,
 
+  R_PPC_PPE_REL10 = 200,
+
   R_PPC_VLE_REL8 = 216,
   R_PPC_VLE_REL15 = 217,
   R_PPC_VLE_REL24 = 218,
@@ -204,6 +206,7 @@ enum
   R_POWERPC_GNU_VTINHERIT = 253,
   R_POWERPC_GNU_VTENTRY = 254,
   R_PPC_TOC16 = 255,
+
 };
 
 // e_flags values defined for powerpc

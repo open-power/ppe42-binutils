@@ -364,6 +364,36 @@ static const struct pd_reg pre_defined_registers[] =
 
   { "ctr", 9 },
 
+  { "d.0", 0 },    /* Double Word Regs for PPE */
+  { "d.1", 1 }, 
+  { "d.2", 2 },    
+  { "d.28", 28 },
+  { "d.29", 29 },
+  { "d.3", 3 },
+  { "d.30", 30 },
+  { "d.31", 31 },
+  { "d.4", 4 },
+  { "d.5", 5 },
+  { "d.6", 6 },
+  { "d.7", 7 },
+  { "d.8", 8 },
+  { "d.9", 9 },
+
+  { "d0", 0 },     /* More Double Word Regs for PPE */
+  { "d1", 1 },  
+  { "d2", 2 },    
+  { "d28", 28 },
+  { "d29", 29 },
+  { "d3", 3 },
+  { "d30", 30 },
+  { "d31", 31 },
+  { "d4", 4 },
+  { "d5", 5 },
+  { "d6", 6 },
+  { "d7", 7 },
+  { "d8", 8 },
+  { "d9", 9 },
+
   { "dar", 19 },    /* Data Access Register */
   { "dec", 22 },    /* Decrementer */
   { "dsisr", 18 },  /* Data Storage Interrupt Status Register */
@@ -1272,6 +1302,7 @@ PowerPC options:\n\
                         generate code for PowerPC 603/604\n\
 -m403                   generate code for PowerPC 403\n\
 -m405                   generate code for PowerPC 405\n\
+-mppe42                 generate code for PowerPC ppe\n\
 -m440                   generate code for PowerPC 440\n\
 -m464                   generate code for PowerPC 464\n\
 -m476                   generate code for PowerPC 476\n\
@@ -1362,7 +1393,7 @@ ppc_arch (void)
   const char *default_cpu = TARGET_CPU;
   ppc_set_cpu ();
 
-  if ((ppc_cpu & PPC_OPCODE_PPC) != 0)
+  if ((ppc_cpu & (PPC_OPCODE_PPC | PPC_OPCODE_PPE)) != 0)
     return bfd_arch_powerpc;
   if ((ppc_cpu & PPC_OPCODE_VLE) != 0)
     return bfd_arch_powerpc;
@@ -1820,6 +1851,47 @@ ppc_insert_operand (unsigned long insn,
 	as_bad_value_out_of_range (_("operand"), val, min, max, file, line);
     }
 
+
+  if (cpu & PPC_OPCODE_PPE)
+  {
+    if (operand->flags & (PPC_OPERAND_GPR | PPC_OPERAND_GPR_0))
+      switch(val)
+      {
+      case 0: case 1: case 2: case 3: case 4: case 5: case 6:
+      case 7: case 8: case 9: case 10: case 13:
+      case 28: case 29: case 30: case 31:
+        break;
+       /* do nothing */
+      default:
+        if (val > 1 && val < 31)
+          as_bad_where (file, line, "%s %d", "Invalid PPE register: ", (int)val);
+        break;
+      }
+    else if (operand->flags & PPC_OPERAND_GPVDR)
+      switch(val)
+      {
+      case 0: case 1: case 2: case 3: case 4: case 5: case 6:
+      case 7: case 8: case 9:
+      case 28: case 29: case 30: case 31:
+        break;
+       /* do nothing */
+      default:
+        if (val > 0 && val < 31)
+          as_bad_where (file, line, "%s %d %x", "Invalid PPE virtual double register:", (int)val, (unsigned)operand->flags);
+        break;
+      }
+    else if (operand->flags & PPC_OPERAND_CR_REG)
+      switch(val)
+      {
+      case 0:
+        break;
+       /* do nothing */
+      default:
+        if (val != 0)
+          as_bad_where (file, line, "%s %d %x", "Invalid PPE Condition register:", (int)val, (unsigned)operand->flags);
+        break;
+      }
+  }
   if (operand->insert)
     {
       const char *errmsg;
@@ -3255,6 +3327,10 @@ md_assemble (char *str)
 		   && operand->bitm == 0xfffc
 		   && operand->shift == 0)
 	    reloc = BFD_RELOC_PPC_B16;
+	  else if ((operand->flags & PPC_OPERAND_RELATIVE) != 0
+		   && operand->bitm == 0xffc
+		   && operand->shift == -1)
+	    reloc = BFD_RELOC_PPC_PPE_REL10;
 	  else if ((operand->flags & PPC_OPERAND_RELATIVE) != 0
 		   && operand->bitm == 0x1fe
 		   && operand->shift == -1)
@@ -7030,6 +7106,7 @@ md_apply_fix (fixS *fixP, valueT *valP, segT seg ATTRIBUTE_UNUSED)
 	case BFD_RELOC_24_PLT_PCREL:
 	case BFD_RELOC_32_PLT_PCREL:
 	case BFD_RELOC_64_PLT_PCREL:
+	case BFD_RELOC_PPC_PPE_REL10:
 	case BFD_RELOC_PPC_VLE_REL8:
 	case BFD_RELOC_PPC_VLE_REL15:
 	case BFD_RELOC_PPC_VLE_REL24:
