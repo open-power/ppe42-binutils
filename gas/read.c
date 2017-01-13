@@ -5019,7 +5019,7 @@ output_big_sleb128 (char *p, LITTLENUM_TYPE *bignum, int size)
     {
       /* Sign-extend VAL.  */
       if (val & (1 << (loaded - 1)))
-	val |= ~0 << loaded;
+	val |= -1U << loaded;
       if (orig)
 	*p = val & 0x7f;
       p++;
