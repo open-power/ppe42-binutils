@@ -12253,8 +12253,9 @@ ppc64_elf_size_stubs (struct bfd_link_info *info, bfd_signed_vma group_size,
 	     stub_sec != NULL;
 	     stub_sec = stub_sec->next)
 	  if ((stub_sec->flags & SEC_LINKER_CREATED) == 0)
-	    stub_sec->size = ((stub_sec->size + (1 << htab->plt_stub_align) - 1)
-			      & (-1 << htab->plt_stub_align));
+	    stub_sec->size = ((stub_sec->size
+                           + (1 << htab->plt_stub_align) - 1)
+			              & -(1 << htab->plt_stub_align));
 
       for (stub_sec = htab->stub_bfd->sections;
 	   stub_sec != NULL;
@@ -12721,8 +12722,9 @@ ppc64_elf_build_stubs (bfd_boolean emit_stub_syms,
 	 stub_sec != NULL;
 	 stub_sec = stub_sec->next)
       if ((stub_sec->flags & SEC_LINKER_CREATED) == 0)
-	stub_sec->size = ((stub_sec->size + (1 << htab->plt_stub_align) - 1)
-			  & (-1 << htab->plt_stub_align));
+	stub_sec->size = ((stub_sec->size
+                       + (1 << htab->plt_stub_align) - 1)
+			          & -(1 << htab->plt_stub_align));
 
   for (stub_sec = htab->stub_bfd->sections;
        stub_sec != NULL;

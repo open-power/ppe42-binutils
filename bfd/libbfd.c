@@ -1102,7 +1102,7 @@ read_signed_leb128 (bfd *abfd ATTRIBUTE_UNUSED,
     }
   while (byte & 0x80);
   if (shift < 8 * sizeof (result) && (byte & 0x40))
-    result |= (((bfd_vma) -1) << shift);
+    result |= -((bfd_vma) 1 << shift);
   *bytes_read_ptr = num_read;
   return result;
 }
