@@ -6628,11 +6628,17 @@ static const int shared_stub_entry[] =
     0x4e800420, /* bctr */
   };
 
+// PPE42 does not have r11 or r12 register available for long jumps
+// SBE needs long jumps until DD2 hardware is released so this
+// temporary fix uses r10. Compiler just restrict use of r10 (-ffixed-r10)
 static const int stub_entry[] =
   {
-    0x3d800000, /* lis 12,xxx@ha */
-    0x398c0000, /* addi 12,12,xxx@l */
-    0x7d8903a6, /* mtctr 12 */
+    0x3d400000, /* lis 10,xxx@ha */
+    0x394a0000, /* add 10,10,xxx@l */
+    0x7d4903a6, /* mtctr 10 */
+    //0x3d800000, /* lis 12,xxx@ha */
+    //0x398c0000, /* addi 12,12,xxx@l */
+    //0x7d8903a6, /* mtctr 12 */
     0x4e800420, /* bctr */
   };
 
