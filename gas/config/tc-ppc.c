@@ -1302,7 +1302,8 @@ PowerPC options:\n\
                         generate code for PowerPC 603/604\n\
 -m403                   generate code for PowerPC 403\n\
 -m405                   generate code for PowerPC 405\n\
--mppe42                 generate code for PowerPC ppe\n\
+-mppe42                 generate code for PowerPC ppe42\n\
+-mppe42x                generate code for PowerPC ppe42x\n\
 -m440                   generate code for PowerPC 440\n\
 -m464                   generate code for PowerPC 464\n\
 -m476                   generate code for PowerPC 476\n\
@@ -1393,7 +1394,7 @@ ppc_arch (void)
   const char *default_cpu = TARGET_CPU;
   ppc_set_cpu ();
 
-  if ((ppc_cpu & (PPC_OPCODE_PPC | PPC_OPCODE_PPE)) != 0)
+  if ((ppc_cpu & (PPC_OPCODE_PPC | PPC_OPCODE_PPE | PPC_OPCODE_PPEX)) != 0)
     return bfd_arch_powerpc;
   if ((ppc_cpu & PPC_OPCODE_VLE) != 0)
     return bfd_arch_powerpc;
@@ -1852,7 +1853,7 @@ ppc_insert_operand (unsigned long insn,
     }
 
 
-  if (cpu & PPC_OPCODE_PPE)
+  if (cpu & (PPC_OPCODE_PPE | PPC_OPCODE_PPEX))
   {
     if (operand->flags & (PPC_OPERAND_GPR | PPC_OPERAND_GPR_0))
       switch(val)

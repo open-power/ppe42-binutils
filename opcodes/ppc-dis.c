@@ -58,6 +58,8 @@ struct ppc_mopt ppc_opts[] = {
     0 },
   { "ppe42",     (PPC_OPCODE_PPE),
     0 },
+  { "ppe42x",     (PPC_OPCODE_PPE | PPC_OPCODE_PPEX),
+    0 },
   { "440",     (PPC_OPCODE_PPC | PPC_OPCODE_BOOKE | PPC_OPCODE_440
                 | PPC_OPCODE_ISEL | PPC_OPCODE_RFMCI),
     0 },
