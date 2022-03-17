@@ -4787,8 +4787,8 @@ const struct powerpc_opcode powerpc_opcodes[] = {
 {"mulhd",	XO(31,73,0,0),	XO_MASK,     PPC64|PPCVLE, PPCNONE,	{RT, RA, RB}},
 {"mulhd.",	XO(31,73,0,1),	XO_MASK,     PPC64|PPCVLE, PPCNONE,	{RT, RA, RB}},
  
-{"mulhw",	XO(31,75,0,0),	XO_MASK,     PPC|PPCVLE, PPCNONE,	{RT, RA, RB}},
-{"mulhw.",	XO(31,75,0,1),	XO_MASK,     PPC|PPCVLE, PPCNONE,	{RT, RA, RB}},
+{"mulhw",	XO(31,75,0,0),	XO_MASK,     PPEX|PPC|PPCVLE, PPCNONE,	{RT, RA, RB}},
+{"mulhw.",	XO(31,75,0,1),	XO_MASK,     PPEX|PPC|PPCVLE, PPCNONE,	{RT, RA, RB}},
 
 {"dlmzb",	XRC(31,78,0), X_MASK, PPC403|PPC440|TITAN|PPCVLE, PPCNONE, {RA, RS, RB}},
 {"dlmzb.",	XRC(31,78,1), X_MASK, PPC403|PPC440|TITAN|PPCVLE, PPCNONE, {RA, RS, RB}},
